@@ -3,7 +3,9 @@ import path from 'path'
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import { connectDB } from './config/db';
-
+import { chatController } from './controller/chatControler';
+import { mesageController } from './controller/messageController';
+import { GetMessage } from './rabbitmqConfig/rabbitmq'
 
 dotenv.config()
 connectDB()
@@ -29,7 +31,9 @@ const grpcServer = () => {
 };
 
 server.addService(messageProto.MessageServices.service, {
-
+    CreateChat: chatController.createChats,
+    getChatsList: chatController.getChatsList,
+    getMessages: mesageController.getMessages,
 })
-
+GetMessage();
 grpcServer();
