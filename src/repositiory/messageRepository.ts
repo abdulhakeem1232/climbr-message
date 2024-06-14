@@ -1,4 +1,22 @@
 import MessageModel from "../model/messageMode";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+
+const access_key = process.env.ACCESS_KEY
+const secret_access_key = process.env.SECRET_ACCESS_KEY
+const bucket_region = process.env.BUCKET_REGION
+const bucket_name = process.env.BUCKET_NAME
+if (!access_key || !secret_access_key) {
+    throw new Error("AWS credentials are not provided.");
+}
+const s3: S3Client = new S3Client({
+    credentials: {
+        accessKeyId: access_key,
+        secretAccessKey: secret_access_key
+    },
+    region: process.env.BUCKET_REGION
+});
 
 export const messageRespository = {
     createMessage: async () => {
@@ -12,17 +30,28 @@ export const messageRespository = {
     getMessage: async (chatId: string) => {
         try {
             let chats = await MessageModel.find({ chat: chatId })
+            for (let chat of chats) {
+                if (chat.filePath) {
+                    const getObjectParams = {
+                        Bucket: bucket_name,
+                        Key: chat.filePath,
+                    }
+                    const getObjectCommand = new GetObjectCommand(getObjectParams);
+                    const url = await getSignedUrl(s3, getObjectCommand, { expiresIn: 3600 });
+                    chat.filePath = url
+                }
+            }
             return { chats }
         } catch (err) {
             console.error("Error while get chats", err)
             return null;
         }
     },
-    sendMessage: async (chatId: string, userId: string, message: string) => {
+    sendMessage: async (chatId: string, userId: string, message: string, filePath: string, fileType: string) => {
         try {
-            console.log('in reo-----------r', chatId, userId, message);
+            console.log(chatId, userId, message);
             let response = new MessageModel({
-                chat: chatId, sender: userId, message: message
+                chat: chatId, sender: userId, message: message, filePath: filePath, fileType: fileType
             })
             await response.save()
             console.log(response, '9999999');

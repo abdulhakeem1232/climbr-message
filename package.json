@@ -11,9 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.596.0",
+    "@aws-sdk/middleware-endpoint": "^3.374.0",
+    "@aws-sdk/s3-request-presigner": "^3.596.0",
     "@grpc/grpc-js": "^1.10.8",
     "@grpc/proto-loader": "^0.7.13",
     "@types/amqplib": "^0.10.5",
+    "@types/aws-sdk": "^2.7.0",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.21",
     "@types/mongoose": "^5.11.97",

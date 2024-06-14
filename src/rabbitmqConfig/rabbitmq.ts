@@ -19,9 +19,9 @@ export async function GetMessage() {
         if (data) {
             console.log('Received data:', data.content.toString());
             const messages = JSON.parse(data.content.toString());
-            const { chatId, userId, message } = messages;
+            const { chatId, userId, message, filePath, fileType } = messages;
 
-            await messageRespository.sendMessage(chatId, userId, message);
+            await messageRespository.sendMessage(chatId, userId, message, filePath, fileType);
             channel.ack(data);
         }
     }, { noAck: false });
