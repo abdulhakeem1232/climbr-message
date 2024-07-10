@@ -5,7 +5,8 @@ import * as protoLoader from "@grpc/proto-loader";
 import { connectDB } from './config/db';
 import { chatController } from './controller/chatControler';
 import { mesageController } from './controller/messageController';
-import { GetMessage } from './rabbitmqConfig/rabbitmq'
+// import { GetMessage } from './rabbitmqConfig/rabbitmq'
+import RabbitMQClient from './rabbitmqConfig/client'
 
 dotenv.config()
 connectDB()
@@ -15,10 +16,10 @@ const messageProto = grpc.loadPackageDefinition(packageDefinition) as any;
 
 const server = new grpc.Server();
 
-
+const Domain = process.env.NODE_ENV === 'dev' ? "0.0.0.0" : process.env.PRO_DOMAIN_MESSAGE
 const grpcServer = () => {
     server.bindAsync(
-        `0.0.0.0:${process.env.PORT}`,
+        `${Domain}:${process.env.MESSAGE_PORT}`,
         grpc.ServerCredentials.createInsecure(),
         (err, port) => {
             if (err) {
@@ -29,11 +30,13 @@ const grpcServer = () => {
         }
     );
 };
+RabbitMQClient.initialize();
+
 
 server.addService(messageProto.MessageServices.service, {
     CreateChat: chatController.createChats,
     getChatsList: chatController.getChatsList,
     getMessages: mesageController.getMessages,
 })
-GetMessage();
+// GetMessage();
 grpcServer();

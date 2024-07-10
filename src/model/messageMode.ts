@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 export interface IMessage extends Document {
-    chat: string;
+    chat: mongoose.Schema.Types.ObjectId;
     sender: string;
     receiver: string;
     message?: string;
@@ -10,7 +10,7 @@ export interface IMessage extends Document {
 }
 
 const MessageSchema: Schema<IMessage> = new Schema({
-    chat: { type: String, },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat', required: true },
     sender: { type: String, },
     message: { type: String },
     filePath: { type: String },

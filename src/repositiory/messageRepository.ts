@@ -1,4 +1,5 @@
 import MessageModel from "../model/messageMode";
+import ChatModel from "../model/chatsMode";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -50,11 +51,11 @@ export const messageRespository = {
     sendMessage: async (chatId: string, userId: string, message: string, filePath: string, fileType: string) => {
         try {
             console.log(chatId, userId, message);
+            await ChatModel.findByIdAndUpdate(chatId, { updatedAt: new Date() });
             let response = new MessageModel({
                 chat: chatId, sender: userId, message: message, filePath: filePath, fileType: fileType
             })
-            await response.save()
-            console.log(response, '9999999');
+            await response.save();
             return response
         } catch (err) {
             console.error("Error while updating chats", err)

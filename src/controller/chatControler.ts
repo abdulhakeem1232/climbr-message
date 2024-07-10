@@ -4,7 +4,6 @@ export const chatController = {
     createChats: async (call: any, callback: any) => {
         try {
             const { userId, guestId } = call.request
-            console.log(call.request, '------------');
             let response = await chatService.createChat(userId, guestId)
             callback(null, response)
         } catch (err) {
