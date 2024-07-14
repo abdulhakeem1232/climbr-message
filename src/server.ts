@@ -16,7 +16,8 @@ const messageProto = grpc.loadPackageDefinition(packageDefinition) as any;
 
 const server = new grpc.Server();
 
-const Domain = process.env.NODE_ENV === 'dev' ? "0.0.0.0" : process.env.PRO_DOMAIN_MESSAGE
+// const Domain = process.env.NODE_ENV === 'dev' ? "0.0.0.0" : process.env.PRO_DOMAIN_MESSAGE
+const Domain = "0.0.0.0";
 const grpcServer = () => {
     server.bindAsync(
         `${Domain}:${process.env.MESSAGE_PORT}`,
