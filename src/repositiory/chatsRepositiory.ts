@@ -7,11 +7,14 @@ export const chatRepositiory = {
                 participants: { $all: [user1, user2] }
             });
             if (chat) {
+                console.log(chat, 'already');
                 return { success: true, chatId: chat._id }
+
             } else {
                 chat = new ChatModel({
                     participants: [user1, user2]
                 });
+                console.log(chat, 'added');
                 await chat.save();
                 return { success: true, chatId: chat._id }
             }
@@ -45,6 +48,8 @@ export const chatRepositiory = {
                 },
                 { $sort: { "updatedAt": -1 } }
             ])
+            console.log(chatlist, '===============chatlist');
+
             return { chatlist };
         } catch (err) {
             console.error("Error while get lisdt of chats", err)
