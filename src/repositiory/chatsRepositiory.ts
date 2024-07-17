@@ -35,8 +35,13 @@ export const chatRepositiory = {
                         as: 'messages'
                     }
                 },
-                { $unwind: "$messages" },
-                { $sort: { "messages.createdAt": - 1 } },
+                {
+                    $unwind: {
+                        path: "$messages",
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                { $sort: { "messages.createdAt": -1 } },
                 {
                     $group: {
                         _id: "$_id",
@@ -47,14 +52,14 @@ export const chatRepositiory = {
                     }
                 },
                 { $sort: { "updatedAt": -1 } }
-            ])
+            ]);
             console.log(chatlist, '===============chatlist');
-
             return { chatlist };
         } catch (err) {
-            console.error("Error while get lisdt of chats", err)
+            console.error("Error while getting list of chats", err);
             return null;
         }
-    },
+    }
+
 
 }
